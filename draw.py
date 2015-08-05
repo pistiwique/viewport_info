@@ -5,21 +5,21 @@ def displayViewportInfoPanel(self, context):
     layout = self.layout    
     show_text = context.window_manager.show_text
     
-    row = layout.row(align=True)
-    row.prop(show_text, "vp_info_display_panel", text ="")
+    row = layout.row(align=True)    
     if show_text.vp_info_enabled:
         row.operator('view3d.adh_display_text', text="Viewport info", icon='RESTRICT_VIEW_OFF' )                                
     else:
         row.operator('view3d.adh_display_text', text="Viewport info", icon='RESTRICT_VIEW_ON')
+    row.prop(show_text, "vp_info_display_panel", icon='SCRIPTWIN')
     if show_text.vp_info_display_panel:
         
         # Edit mode
         split = layout.split(percentage=0.1)
         split.separator()
         split2 = split.split()
-        row = split2.row()       
-        row.prop(show_text, "edt_use", text="")
-        row.prop(show_text, "edt_options",text="Edit", icon='EDITMODE_HLT') 
+        row = split2.row(align=True)       
+        row.prop(show_text, "edt_use", text="Edit", icon='EDITMODE_HLT')
+        row.prop(show_text, "edt_options", icon='SCRIPTWIN') 
         if show_text.edt_options:
             box = layout.box()
             row = box.row(align=True)
@@ -39,9 +39,9 @@ def displayViewportInfoPanel(self, context):
         split = layout.split(percentage=0.1)
         split.separator()
         split2 = split.split()
-        row = split2.row() 
-        row.prop(show_text, "obj_use", text="")
-        row.prop(show_text, "obj_options",text="Object", icon='OBJECT_DATAMODE')
+        row = split2.row(align=True) 
+        row.prop(show_text, "obj_use", text="Object", icon='OBJECT_DATAMODE')
+        row.prop(show_text, "obj_options", icon='SCRIPTWIN')
         if show_text.obj_options:
             box = layout.box()
             row = box.row(align=True)
@@ -64,9 +64,9 @@ def displayViewportInfoPanel(self, context):
         split = layout.split(percentage=0.1)
         split.separator()
         split2 = split.split()
-        row = split2.row() 
-        row.prop(show_text, "sculpt_use", text="")
-        row.prop(show_text, "sculpt_options",text="Sculpt", icon='SCULPTMODE_HLT')
+        row = split2.row(align=True) 
+        row.prop(show_text, "sculpt_use", text="Sculpt", icon='SCULPTMODE_HLT')
+        row.prop(show_text, "sculpt_options", icon='SCRIPTWIN')
         if show_text.sculpt_options:
             box = layout.box()
             row = box.row(align=True)           
@@ -90,9 +90,9 @@ def displayViewportInfoPanel(self, context):
         split = layout.split(percentage=0.1)
         split.separator()
         split2 = split.split()
-        row = split2.row() 
-        row.prop(show_text, "rder_use", text="")
-        row.prop(show_text, "rder_options",text="Render", icon='CAMERA_DATA')
+        row = split2.row(align=True) 
+        row.prop(show_text, "rder_use", text="Render", icon='CAMERA_DATA')
+        row.prop(show_text, "rder_options", icon='SCRIPTWIN')
         if show_text.rder_options:
             box = layout.box()
             row = box.row(align=True)            
@@ -112,9 +112,9 @@ def displayViewportInfoPanel(self, context):
         split = layout.split(percentage=0.1)
         split.separator()
         split2 = split.split()
-        row = split2.row() 
-        row.prop(show_text, "scn_use", text="")
-        row.prop(show_text, "scn_options",text="Scene", icon='SCENE_DATA')
+        row = split2.row(align=True) 
+        row.prop(show_text, "scn_use", text="Scene", icon='SCENE_DATA')
+        row.prop(show_text, "scn_options", icon='SCRIPTWIN')
         if show_text.scn_options:
             box = layout.box()
             row = box.row(align=True)
