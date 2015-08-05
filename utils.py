@@ -38,7 +38,7 @@ def editInfo():
         faces = len(bm.faces)        
         show_text.updated_edt_text.extend([CR, ("Faces: ", label_color), (str(faces), value_color)]) 
     if show_text.tris_count_edt:
-        show_text.updated_edt_text.extend([CR, ("Tris: ", label_color), (str(tris) + " ( " + str(tris + quads*2 + ngons_to_tris) + " )", value_color)]) 
+        show_text.updated_edt_text.extend([CR, ("Tris: ", label_color), (str(tris + quads*2 + ngons_to_tris), value_color)]) 
     if show_text.ngons_count_edt:
         show_text.updated_edt_text.extend([CR, ("Ngons: ", label_color), (str(ngons), value_color)]) 
     if show_text.verts_count_edt:
@@ -62,7 +62,7 @@ def trisCount():
             ngons += 1 
             V = count - 2  
             ngons_to_tris += V 
-    tris_count = str(tris) + " ( " + str(tris + quads*2 + ngons_to_tris) + " ),"
+    tris_count = str(tris + quads*2 + ngons_to_tris)
     return tris_count
 
 def ngonsCount():   
@@ -95,7 +95,7 @@ def objInfo():
                 faces = len(bpy.context.active_object.data.polygons)
                 show_text.updated_obj_text.extend([(" F ", label_color), (str(faces) + ",", value_color)])
             if show_text.tris_count_obj:
-                show_text.updated_obj_text.extend([(" T ", label_color), (trisCount(), value_color)])   
+                show_text.updated_obj_text.extend([(" T ", label_color), (trisCount() + ",", value_color)])   
             if show_text.ngons_count_obj:
                 show_text.updated_obj_text.extend([(" Ng ", label_color), (ngonsCount() + ",", value_color)])
             if show_text.verts_count_obj:
