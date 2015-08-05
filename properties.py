@@ -10,7 +10,7 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
        
       
     vp_info_display_panel = bpy.props.BoolProperty(
-        name="Viewport info",
+        name="",
         description="Display selected options in the viewport",
         default=False)
     
@@ -54,10 +54,10 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
         name=" ")  
     edt_pos_x = bpy.props.IntProperty(name="Pos X", 
         default=29, 
-        min=0, max=200)                                            
+        min=0, max=500)                                            
     edt_pos_y = bpy.props.IntProperty(name="Pos Y", 
         default=75, 
-        min=0, max=200)
+        min=0, max=500)
             
     # OBJECT PROPERTIES
     obj_use = bpy.props.BoolProperty(
@@ -100,11 +100,11 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
     obj_pos_x = bpy.props.IntProperty(
         name="Pos X", 
         default=29, 
-        min=0, max=200)                                            
+        min=0, max=500)                                            
     obj_pos_y = bpy.props.IntProperty(
         name="Pos Y", 
         default=75, 
-        min=0, max=200)
+        min=0, max=500)
            
     # SCULPT PROPERTIES
     sculpt_use = bpy.props.BoolProperty(
@@ -134,7 +134,7 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
         update=updateTextProperties)
     symmetry_use = bpy.props.BoolProperty(
         name="Symetry axis",
-        default=False, 
+        default=True, 
         update=updateTextProperties)
     sculpt_corner = bpy.props.EnumProperty(
         items=(('1', "Top L", ""),
@@ -145,10 +145,10 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
         name=" ")
     sculpt_pos_x = bpy.props.IntProperty(name="Pos X", 
         default=29, 
-        min=0, max=200)                                            
+        min=0, max=500)                                            
     sculpt_pos_y = bpy.props.IntProperty(name="Pos Y", 
         default=75, 
-        min=0, max=200)
+        min=0, max=500)
             
     # RENDER PROPERTIES
     rder_use = bpy.props.BoolProperty(
@@ -167,16 +167,16 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
     rder_f_range = bpy.props.BoolProperty(
         name="Frame range", 
         description="Display Start frame, End frame and Frame step", 
-        default=False,
+        default=True,
         update=updateTextProperties)
     rder_f_rate = bpy.props.BoolProperty(
         name="Frame rate",
-        default=False,
+        default=True,
         update=updateTextProperties)
     rder_sample = bpy.props.BoolProperty(
         name="Sampling", 
         description="Display render and preview samples", 
-        default=False,
+        default=True,
         update=updateTextProperties) 
     rder_corner = bpy.props.EnumProperty(
         items=(('1', "Top L", ""),
@@ -188,11 +188,11 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
     rder_pos_x = bpy.props.IntProperty(
         name="Pos X", 
         default=29, 
-        min=0, max=200)                                            
+        min=0, max=500)                                            
     rder_pos_y = bpy.props.IntProperty(
         name="Pos Y", 
         default=75, 
-        min=0, max=200)
+        min=0, max=500)
         
     # SCENE PROPERTIES
     scn_use = bpy.props.BoolProperty(
@@ -210,15 +210,15 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
         update=updateTextProperties)
     cam_dist = bpy.props.BoolProperty(
         name="Distance between objects",
-        default=False,
+        default=True,
         update=updateTextProperties)
     current_frame = bpy.props.BoolProperty(
         name="Current frame",
-        default=False,
+        default=True,
         update=updateTextProperties)
     cam_focal = bpy.props.BoolProperty(
         name="Focal camera",
-        default=False,
+        default=True,
         update=updateTextProperties)
     scn_corner = bpy.props.EnumProperty(
         items=(('1', "Top L", ""),
@@ -230,11 +230,11 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
     scn_pos_x = bpy.props.IntProperty(
         name="Pos X", 
         default=29, 
-        min=0, max=200)                                            
+        min=0, max=500)                                            
     scn_pos_y = bpy.props.IntProperty(
         name="Pos Y", 
         default=75, 
-        min=0, max=200)
+        min=0, max=500)
         
     # CUSTOM TEXT PROPERTIES
     options_use = bpy.props.BoolProperty(
