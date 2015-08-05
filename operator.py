@@ -46,8 +46,8 @@ def updateTextProperties(self, context):
             sculptInfo()
          
         
-        
-def drawTextArray(text, corner, pos_x, pos_y):
+
+def drawObjTextArray(text, corner, pos_x, pos_y):
     show_text = bpy.context.window_manager.show_text
     mode = bpy.context.object.mode
     font_id = 0
@@ -119,6 +119,56 @@ def drawTextArray(text, corner, pos_x, pos_y):
         else:                
             x_offset = 0           
             y_offset -= line_height
+                                
+def drawTextArray(text, corner, pos_x, pos_y):
+    show_text = bpy.context.window_manager.show_text
+    font_id = 0
+    height = bpy.context.region.height
+    width = bpy.context.region.width
+    txt_width = []
+    list_line_width = []
+    blf.size(font_id, show_text.text_font_size, 72) 
+    x_offset = 0
+    y_offset = 0
+    line_height = (blf.dimensions(font_id, "M")[1] * 1.45) 
+    x = 0
+    y = 0 
+    
+    for command in text:            
+        if len(command) == 2:
+            Text, Color = command             
+            text_width, text_height = blf.dimensions(font_id, Text) 
+            txt_width.append(text_width)
+    
+    if corner == '1' or corner == '3':
+        x = pos_x
+            
+    else:
+        for label, value in zip(txt_width[0::2], txt_width[1::2]): 
+            l_width = label + value        
+            list_line_width.append(l_width) 
+        x = width - (max(list_line_width) + pos_x)
+            
+    if corner == '1' or corner == '2': 
+        y = height - pos_y
+    
+    else: 
+        line_count = text.count("Carriage return")   
+        y = pos_y + (line_height*line_count)
+    
+        
+    for command in text:            
+        if len(command) == 2:
+            Text, Color = command          
+            bgl.glColor3f(*Color)
+            text_width, text_height = blf.dimensions(font_id, Text)                                                   
+            blf.position(font_id, (x + x_offset), (y + y_offset), 0)          
+            blf.draw(font_id, Text)                
+            x_offset += text_width  
+                      
+        else:                
+            x_offset = 0           
+            y_offset -= line_height
             
              
                                                                        
@@ -131,7 +181,7 @@ def drawTextCallback(self, context):
                 drawTextArray(show_text.updated_edt_text, show_text.edt_corner, show_text.edt_pos_x, show_text.edt_pos_y)
         elif context.object.mode == 'OBJECT':
             if show_text.obj_use: 
-                drawTextArray(show_text.updated_obj_text, show_text.obj_corner, show_text.obj_pos_x, show_text.obj_pos_y) 
+                drawObjTextArray(show_text.updated_obj_text, show_text.obj_corner, show_text.obj_pos_x, show_text.obj_pos_y) 
             if show_text.rder_use: 
                 drawTextArray(renderInfo(), show_text.rder_corner, show_text.rder_pos_x, show_text.rder_pos_y)
             if show_text.scn_use:
