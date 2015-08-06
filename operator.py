@@ -10,20 +10,19 @@ def updateTextHandlers(scene):
     mode = bpy.context.object.mode
     
     if mode == 'EDIT':
+        if show_text.update_mode_enabled:
+            if show_text.update_toggle_mode != 'EDIT':
+                show_text.update_toggle_mode = bpy.context.object.mode  
+                editInfo()          
         if show_text.edt_use:
-            if 'EDIT' not in show_text.update_toggle_mode:
-                show_text.update_toggle_mode[:] = []
-                show_text.update_toggle_mode.append(bpy.context.object.mode)
-                editInfo()
             ob = scene.objects.active
             if ob.data.is_updated_data:                                      
                 editInfo()
     elif mode == 'OBJECT':
+        if show_text.update_toggle_mode != 'OBJECT':
+            show_text.update_toggle_mode = bpy.context.object.mode   
+            objInfo()       
         if show_text.obj_use:
-            if 'OBJECT' not in show_text.update_toggle_mode:
-                show_text.update_toggle_mode[:] = []
-                show_text.update_toggle_mode.append(bpy.context.object.mode)
-                objInfo()
             if bpy.context.selected_objects not in show_text.obj_pre:
                 show_text.obj_pre[:] = []            
                 show_text.obj_pre.append(bpy.context.selected_objects)
@@ -225,14 +224,115 @@ class VIEW3D_OT_ADH_display_text(bpy.types.Operator):
             context.window_manager.show_text.vp_info_enabled = True
             context.window_manager.modal_handler_add(self)
             VIEW3D_OT_ADH_display_text.handle_add(self, context)
-            bpy.app.handlers.scene_update_post.append(updateTextHandlers)
-
+            if not updateTextHandlers in bpy.app.handlers.scene_update_post:
+                bpy.app.handlers.scene_update_post.append(updateTextHandlers)
             return {'RUNNING_MODAL'}
         else:
             context.window_manager.show_text.vp_info_enabled = False
             VIEW3D_OT_ADH_display_text.handle_remove(context)
-            bpy.app.handlers.scene_update_post.remove(updateTextHandlers) 
+            if context.window_manager.show_text.display_color_enabled == False:
+                bpy.app.handlers.scene_update_post.remove(updateTextHandlers)
 
             return {'CANCELLED'}
 
         return {'CANCELLED'}
+
+
+
+class addMaterials(bpy.types.Operator):
+    bl_idname = "object.add_materials"
+    bl_label = "Add materials"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.object is not None and context.object.type == 'MESH'
+    
+    def execute(sefl, context):        
+        show_text = bpy.context.window_manager.show_text
+        show_text.active_shade = bpy.context.space_data.viewport_shade
+        bpy.context.space_data.viewport_shade = 'SOLID'         
+        if not bpy.data.materials:
+            if context.object.mode == 'OBJECT':
+                bpy.ops.object.mode_set(mode='EDIT')
+                createMat() 
+            elif context.object.mode == 'EDIT':
+                createMat()
+            
+        else:
+            if bpy.context.object.active_material:
+                for mat_slots in bpy.context.active_object.material_slots:
+                    show_text.save_mat.append(mat_slots.name)
+                        
+            ref_list = ['Quads', 'Ngons', 'Tris']            
+            mat_list = []
+            for mat in bpy.data.materials:
+                mat_list.append(mat.name)
+            for ref in ref_list:
+                if ref in mat_list:
+                    if bpy.context.space_data.use_matcap:
+                        show_text.matcap_enabled = True
+                        bpy.context.space_data.use_matcap = False 
+                    else:
+                        show_text.matcap_enabled = False                    
+                    restoreMat()
+                    
+                else:
+                    setupScene() 
+                    createMat()
+        show_text.display_color_enabled = True 
+        if not updateTextHandlers in bpy.app.handlers.scene_update_post:
+            bpy.app.handlers.scene_update_post.append(updateTextHandlers)
+        show_text.update_mode_enabled = True
+        editInfo()    
+        return {'FINISHED'}
+
+
+
+class removeMaterials(bpy.types.Operator):
+    bl_idname = "object.remove_materials"
+    bl_label = "Remove materials"
+    
+    @classmethod
+    def poll(cls, context):
+        return context.active_object.type == 'MESH'
+    
+    def execute(self, context):
+        show_text = bpy.context.window_manager.show_text     
+        if bpy.context.object.mode == 'OBJECT':
+            for slots in bpy.context.active_object.material_slots:
+                bpy.ops.object.material_slot_remove()
+            if len(show_text.save_mat) > 0:
+                ob = bpy.context.active_object
+                me = ob.data
+                
+                for mat in show_text.save_mat:
+                    mat_list = bpy.data.materials[mat]
+                    me.materials.append(mat_list)
+
+                show_text.save_mat[:] = [] # clean the list
+            if show_text.matcap_enabled:
+                bpy.context.space_data.use_matcap = True 
+        elif bpy.context.object.mode == 'EDIT': 
+            show_text.update_mode_enabled = False                      
+            bpy.ops.object.mode_set(mode='OBJECT')
+            for slots in bpy.context.active_object.material_slots:
+                bpy.ops.object.material_slot_remove()
+            if len(show_text.save_mat) != 0:
+                ob = bpy.context.active_object
+                me = ob.data
+                
+                for mat in show_text.save_mat:
+                    mat_list = bpy.data.materials[mat]
+                    me.materials.append(mat_list)
+
+                show_text.save_mat[:] = [] # clean the list
+            if show_text.matcap_enabled:
+                bpy.context.space_data.use_matcap = True   
+            bpy.ops.object.mode_set(mode='EDIT')
+            show_text.update_mode_enabled = True
+        
+        bpy.context.space_data.viewport_shade = show_text.active_shade
+        show_text.display_color_enabled = False   
+        if show_text.vp_info_enabled == False: 
+            bpy.app.handlers.scene_update_post.remove(updateTextHandlers)            
+        return {'FINISHED'}
