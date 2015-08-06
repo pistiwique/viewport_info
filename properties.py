@@ -5,7 +5,7 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
     
     updated_edt_text = []    
     updated_obj_text = []
-    update_toggle_mode = []
+    update_toggle_mode = bpy.props.StringProperty()
     obj_pre = []
        
       
@@ -261,3 +261,17 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
         default=(0.9, 0.9, 0.9), 
         min=0, max=1, 
         subtype='COLOR')
+    
+    # DISPLAY COLOR PROPERTIES    
+    display_color_enabled = bpy.props.BoolProperty(
+        name="Mesh check enabled",
+        description="Display faces color",
+        default=False)
+    active_shade = bpy.props.StringProperty()
+    matcap_enabled = bpy.props.BoolProperty(
+        name="Mesh check matcap",
+        description="Define if matcap enabled or disabled",
+        default=False)    
+    save_mat = []
+    update_mode_enabled = bpy.props.BoolProperty(
+        default=False)
