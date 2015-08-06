@@ -4,8 +4,13 @@ from math import sqrt
 from . properties import * 
 
 
-    
-def editInfo():         
+
+        ######################################
+        ####    DISPLAY TEXT FONCTIONS    ####
+        ######################################  
+        
+          
+def editInfo():        
     show_text = bpy.context.window_manager.show_text
     show_text.updated_edt_text[:] = []                                      
     label_color = show_text.label_color
@@ -18,32 +23,35 @@ def editInfo():
     
     quads = tris = ngons = 0
     ngons_to_tris = 0             
-    verts = len(bm.verts)
-    faces = len(bm.faces)
     
     for f in bm.faces:                
         v = len(f.verts)
         if v == 3: # tris
             tris += 1
+            if show_text.display_color_enabled:
+                f.material_index = 2
         elif v == 4: # quads
-            quads += 1  
+            quads += 1 
+            if show_text.display_color_enabled:
+                f.material_index = 0 
         elif v > 4: # ngons
-            ngons += 1
+            ngons += 1            
             V = len(f.verts) - 2 # nomber of tris in ngons
-            ngons_to_tris += V # get total tris of total ngons
-    
+            ngons_to_tris += V # get total tris of total ngons 
+            if show_text.display_color_enabled:  
+                f.material_index = 1 
+                
     bmesh.update_edit_mesh(me)
-
-    if show_text.faces_count_edt:
-        faces = len(bm.faces)        
-        show_text.updated_edt_text.extend([CR, ("Faces: ", label_color), (str(faces), value_color)]) 
+    
+    if show_text.faces_count_edt:        
+        show_text.updated_edt_text.extend([CR, ("Faces: ", label_color), (str(len(bm.faces)), value_color)]) 
     if show_text.tris_count_edt:
         show_text.updated_edt_text.extend([CR, ("Tris: ", label_color), (str(tris + quads*2 + ngons_to_tris), value_color)]) 
     if show_text.ngons_count_edt:
         show_text.updated_edt_text.extend([CR, ("Ngons: ", label_color), (str(ngons), value_color)]) 
     if show_text.verts_count_edt:
-        verts = len(bm.verts)
-        show_text.updated_edt_text.extend([CR, ("Vertex: ", label_color), (str(verts), value_color)])
+        show_text.updated_edt_text.extend([CR, ("Vertex: ", label_color), (str(len(bm.verts)), value_color)])
+    
         
         
 
@@ -63,6 +71,7 @@ def trisCount():
             V = count - 2  
             ngons_to_tris += V 
     tris_count = str(tris + quads*2 + ngons_to_tris)
+    
     return tris_count
 
 def ngonsCount():   
@@ -72,6 +81,7 @@ def ngonsCount():
         count = p.loop_total
         if count > 4:
             ngons += 1 
+            
     return str(ngons)
             
             
@@ -228,3 +238,54 @@ def sceneInfo():
     
     return scene_text
  
+
+
+
+        #######################################
+        ####    DISPLAY COLOR FONCTIONS    ####
+        #######################################
+        
+        
+def setupScene():
+    bpy.ops.object.mode_set(mode='OBJECT')
+    for slots in bpy.context.active_object.material_slots:
+        bpy.ops.object.material_slot_remove() # remove all materials slots   
+    bpy.ops.object.mode_set(mode='EDIT')
+
+   
+def createMat():
+    show_text = bpy.context.window_manager.show_text
+    if bpy.context.space_data.use_matcap:
+        show_text.matcap_enabled = True
+        bpy.context.space_data.use_matcap = False
+                            
+    # create new material        
+    mat_A = bpy.data.materials.new("Quads")
+    mat_A.diffuse_color = (0.865, 0.865, 0.865)
+
+    mat_B = bpy.data.materials.new("Ngons")
+    mat_B.diffuse_color = (1, 0, 0)
+    
+    mat_C = bpy.data.materials.new("Tris")
+    mat_C.diffuse_color = (1, 1, 0)
+    
+    ob = bpy.context.active_object
+    me = ob.data
+    mat_list = [mat_A, mat_B, mat_C]
+    for mat in mat_list:
+        me.materials.append(mat) # assign materials
+
+       
+def restoreMat():
+    setupScene()
+    mat_A = bpy.data.materials['Quads']
+
+    mat_B = bpy.data.materials['Ngons']
+    
+    mat_C = bpy.data.materials['Tris']
+    
+    ob = bpy.context.active_object
+    me = ob.data
+    mat_list = [mat_A, mat_B, mat_C]
+    for mat in mat_list:
+        me.materials.append(mat)
