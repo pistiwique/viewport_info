@@ -11,6 +11,12 @@ def displayViewportInfoPanel(self, context):
     else:
         row.operator('view3d.adh_display_text', text="Viewport info", icon='RESTRICT_VIEW_ON')
     row.prop(show_text, "vp_info_display_panel", icon='SCRIPTWIN')
+    row = layout.row(align=True)
+    if show_text.display_color_enabled:
+        row.operator("object.remove_materials", text="Hidde color", icon='RESTRICT_VIEW_OFF')
+    else:
+        row.operator("object.add_materials", text="Display color", icon='COLOR')  
+        
     if show_text.vp_info_display_panel:
         
         # Edit mode
