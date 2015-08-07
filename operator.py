@@ -3,6 +3,7 @@ import blf
 import bgl
 from . utils import *
 from . properties import *  
+from bpy.props import EnumProperty
   
         
 def updateTextHandlers(scene):
@@ -336,3 +337,39 @@ class removeMaterials(bpy.types.Operator):
         if show_text.vp_info_enabled == False: 
             bpy.app.handlers.scene_update_post.remove(updateTextHandlers)            
         return {'FINISHED'}
+    
+    
+
+class DATA_OP_facetype_select(bpy.types.Operator):
+    """Select all faces of a certain type"""
+    bl_idname = "data.facetype_select"
+    bl_label = "Select by face type"
+    bl_options = {'REGISTER', 'UNDO'}
+    face_type = EnumProperty(
+        name="Select faces:",
+        items = (("3","Triangles","Faces made up of 3 vertices"),
+                 ("5","Ngons","Faces made up of 5 and more vertices")),
+        default = "5")
+    
+    @classmethod
+    def poll(cls, context):
+        return context.object is not None and context.object.type == 'MESH'
+
+    def execute(self, context):
+        show_text = bpy.context.window_manager.show_text 
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='DESELECT')
+        if tuple(bpy.context.tool_settings.mesh_select_mode) == (True, False, False):
+            show_text.select_mode = "VERT"
+        elif tuple(bpy.context.tool_settings.mesh_select_mode) == (False, True, False):
+            show_text.select_mode = "EDGE"
+        elif tuple(bpy.context.tool_settings.mesh_select_mode) == (False, False, True):
+            show_text.select_mode = "FACE"
+        context.tool_settings.mesh_select_mode=(False, False, True)
+        if self.face_type == "3":
+            bpy.ops.mesh.select_face_by_sides(number=3, type='EQUAL')
+            bpy.ops.mesh.select_mode(type=show_text.select_mode)
+        else:
+            bpy.ops.mesh.select_face_by_sides(number=4, type='GREATER')
+            bpy.ops.mesh.select_mode(type=show_text.select_mode)        
+        return {'FINISHED'}  
