@@ -1,8 +1,10 @@
+import bpy
+import os
 from . properties import *
 from . operator import *
 
 def displayViewportInfoPanel(self, context):
-    layout = self.layout    
+    layout = self.layout   
     show_text = context.window_manager.show_text
     
     row = layout.row(align=True)    
@@ -10,12 +12,18 @@ def displayViewportInfoPanel(self, context):
         row.operator('view3d.adh_display_text', text="Viewport info", icon='RESTRICT_VIEW_OFF' )                                
     else:
         row.operator('view3d.adh_display_text', text="Viewport info", icon='RESTRICT_VIEW_ON')
-    row.prop(show_text, "vp_info_display_panel", icon='SCRIPTWIN')
+    if show_text.vp_info_display_panel:
+        icon='TRIA_UP'
+    else:
+        icon='SCRIPTWIN'
+    row.prop(show_text, "vp_info_display_panel", icon=icon)
     row = layout.row(align=True)
     if show_text.display_color_enabled:
         row.operator("object.remove_materials", text="Hidde color", icon='RESTRICT_VIEW_OFF')
     else:
         row.operator("object.add_materials", text="Display color", icon='COLOR')  
+    row.operator("data.facetype_select", text="Ngons").face_type = "5"
+    row.operator("data.facetype_select", text="Tris").face_type = "3"
         
     if show_text.vp_info_display_panel:
         
@@ -25,7 +33,11 @@ def displayViewportInfoPanel(self, context):
         split2 = split.split()
         row = split2.row(align=True)       
         row.prop(show_text, "edt_use", text="Edit", icon='EDITMODE_HLT')
-        row.prop(show_text, "edt_options", icon='SCRIPTWIN') 
+        if show_text.edt_options:
+            icon='TRIA_UP'
+        else:
+            icon='SCRIPTWIN'
+        row.prop(show_text, "edt_options", icon=icon) 
         if show_text.edt_options:
             box = layout.box()
             row = box.row(align=True)
@@ -47,7 +59,11 @@ def displayViewportInfoPanel(self, context):
         split2 = split.split()
         row = split2.row(align=True) 
         row.prop(show_text, "obj_use", text="Object", icon='OBJECT_DATAMODE')
-        row.prop(show_text, "obj_options", icon='SCRIPTWIN')
+        if show_text.obj_options:
+            icon='TRIA_UP'
+        else:
+            icon='SCRIPTWIN'
+        row.prop(show_text, "obj_options", icon=icon)
         if show_text.obj_options:
             box = layout.box()
             row = box.row(align=True)
@@ -72,7 +88,11 @@ def displayViewportInfoPanel(self, context):
         split2 = split.split()
         row = split2.row(align=True) 
         row.prop(show_text, "sculpt_use", text="Sculpt", icon='SCULPTMODE_HLT')
-        row.prop(show_text, "sculpt_options", icon='SCRIPTWIN')
+        if show_text.sculpt_options:
+            icon='TRIA_UP'
+        else:
+            icon='SCRIPTWIN'
+        row.prop(show_text, "sculpt_options", icon=icon)
         if show_text.sculpt_options:
             box = layout.box()
             row = box.row(align=True)           
@@ -98,7 +118,11 @@ def displayViewportInfoPanel(self, context):
         split2 = split.split()
         row = split2.row(align=True) 
         row.prop(show_text, "rder_use", text="Render", icon='CAMERA_DATA')
-        row.prop(show_text, "rder_options", icon='SCRIPTWIN')
+        if show_text.rder_options:
+            icon='TRIA_UP'
+        else:
+            icon='SCRIPTWIN'
+        row.prop(show_text, "rder_options", icon=icon)
         if show_text.rder_options:
             box = layout.box()
             row = box.row(align=True)            
@@ -120,7 +144,11 @@ def displayViewportInfoPanel(self, context):
         split2 = split.split()
         row = split2.row(align=True) 
         row.prop(show_text, "scn_use", text="Scene", icon='SCENE_DATA')
-        row.prop(show_text, "scn_options", icon='SCRIPTWIN')
+        if show_text.scn_options:
+            icon='TRIA_UP'
+        else:
+            icon='SCRIPTWIN'
+        row.prop(show_text, "scn_options", icon=icon)
         if show_text.scn_options:
             box = layout.box()
             row = box.row(align=True)
@@ -140,7 +168,11 @@ def displayViewportInfoPanel(self, context):
         split = layout.split(percentage=0.1)
         split.separator()
         split2 = split.split()
-        split2.prop(show_text, "options_use", text="Options", icon='SCRIPTWIN')
+        if show_text.options_use:
+            icon='TRIA_UP'
+        else:
+            icon='SCRIPTWIN'
+        split2.prop(show_text, "options_use", text="Options", icon=icon)
         if show_text.options_use:
             box = layout.box()
             row = box.row()
