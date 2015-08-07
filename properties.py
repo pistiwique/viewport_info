@@ -275,3 +275,7 @@ class viewportInfoCollectionGroup(bpy.types.PropertyGroup):
     save_mat = []
     update_mode_enabled = bpy.props.BoolProperty(
         default=False)
+
+    # SELECTION TRIS/NGONS PROPERTIES
+    select_mode = bpy.props.StringProperty()   
+    
