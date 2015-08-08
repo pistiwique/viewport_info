@@ -2,10 +2,15 @@ import bpy
 import os
 from . properties import *
 from . operator import *
+import bpy.utils.previews
+
+operator_behaviours = ['triangle', 'ngon']
+preview_collections = {}
 
 def displayViewportInfoPanel(self, context):
     layout = self.layout   
     show_text = context.window_manager.show_text
+    pcoll = preview_collections["nav_main"]
     
     row = layout.row(align=True)    
     if show_text.vp_info_enabled:
@@ -21,9 +26,12 @@ def displayViewportInfoPanel(self, context):
     if show_text.display_color_enabled:
         row.operator("object.remove_materials", text="Hidde color", icon='RESTRICT_VIEW_OFF')
     else:
-        row.operator("object.add_materials", text="Display color", icon='COLOR')  
-    row.operator("data.facetype_select", text="Ngons").face_type = "5"
-    row.operator("data.facetype_select", text="Tris").face_type = "3"
+        row.operator("object.add_materials", text="Display color", icon='COLOR') 
+    row.separator()
+    icon = pcoll[operator_behaviours[0]]     
+    row.operator("data.triangles_select", text="", icon_value=icon.icon_id)
+    icon = pcoll[operator_behaviours[1]]
+    row.operator("data.ngons_select", text="", icon_value=icon.icon_id)
         
     if show_text.vp_info_display_panel:
         
@@ -185,5 +193,27 @@ def displayViewportInfoPanel(self, context):
             row.prop(show_text, "value_color")
         
         
+def register_pcoll():
+    import bpy.utils.previews
+    pcoll = bpy.utils.previews.new()
+
+    icons_dir = os.path.join(os.path.dirname(__file__), "icons")
+
+    for img in operator_behaviours:
+        full_img_name = (img + ".png")
+        img_path = os.path.join(icons_dir, full_img_name)
+        pcoll.load(img, img_path, 'IMAGE')
+
+    preview_collections["nav_main"] = pcoll
+
+
+def unregisterpcoll():
+
+    for pcoll in preview_collections.values():
+        bpy.utils.previews.remove(pcoll)
+    preview_collections.clear()
+    
+    
+
     
     
