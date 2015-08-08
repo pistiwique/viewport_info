@@ -1,6 +1,5 @@
 '''
 Copyright (C) 2015 Pistiwique
-YOUR@MAIL.com
 
 Created by Pistiwique
 
@@ -44,24 +43,25 @@ modules = developer_utils.setup_addon_modules(__path__, __name__)
 
 import bpy
 
-
 # register
 ################################## 
 
 import traceback
 
 from . properties import viewportInfoCollectionGroup
-from . draw import displayViewportInfoPanel
+from . draw import *
 
-def register():
+def register():    
     try: bpy.utils.register_module(__name__)
     except: traceback.print_exc()
+    register_pcoll()
     bpy.types.WindowManager.show_text = bpy.props.PointerProperty(type = viewportInfoCollectionGroup)
     bpy.types.VIEW3D_PT_view3d_shading.append(displayViewportInfoPanel)
     
     print("Registered {} with {} modules".format(bl_info["name"], len(modules)))
 
 def unregister():
+    unregister_pcoll()
     bpy.types.VIEW3D_PT_view3d_shading.remove(displayViewportInfoPanel)
 
     del bpy.types.WindowManager.show_text
@@ -69,3 +69,4 @@ def unregister():
     except: traceback.print_exc()
     
     print("Unregistered {}".format(bl_info["name"]))
+
