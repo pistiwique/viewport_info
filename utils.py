@@ -134,7 +134,11 @@ def sculptInfo():
     CR = "Carriage return"     
     tool_settings = bpy.context.scene.tool_settings
     Detail_Size = tool_settings.sculpt.detail_size
-    Constant_Detail = tool_settings.sculpt.constant_detail
+    if hasattr(bpy.context.tool_settings.sculpt, 'constant_detail_resolution'):
+        Constant_Detail = tool_settings.sculpt.constant_detail_resolution
+    else:
+        Constant_Detail = tool_settings.sculpt.constant_detail 
+    
     if(hasattr(tool_settings.sculpt, 'detail_percent')):
         Detail_Percent = tool_settings.sculpt.detail_percent
     active_brush = bpy.context.tool_settings.sculpt.brush.name            

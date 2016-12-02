@@ -29,9 +29,9 @@ def displayViewportInfoPanel(self, context):
         row.operator("object.add_materials", text="Display color", icon='COLOR') 
     row.separator()
     icon = pcoll[operator_behaviours[0]]     
-    row.operator("data.triangles_select", text="", icon_value=icon.icon_id)
+    row.operator("data.facetype_select", text="", icon_value=icon.icon_id).face_type = "3"
     icon = pcoll[operator_behaviours[1]]
-    row.operator("data.ngons_select", text="", icon_value=icon.icon_id)
+    row.operator("data.facetype_select", text="", icon_value=icon.icon_id).face_type = "5"
         
     if show_text.vp_info_display_panel:
         
